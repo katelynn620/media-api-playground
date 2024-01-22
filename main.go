@@ -1,92 +1,70 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"media-api-playground/media"
-	"media-api-playground/media/twitch"
-	"media-api-playground/media/youtube"
-	"os"
+	"media-api-playground/media/source"
 
-	"github.com/nicklaw5/helix/v2"
-	yt "google.golang.org/api/youtube/v3"
+	"github.com/katelynn620/tubemeta"
 )
 
-func runYoutube() {
-	var (
-		mediaSource = "youtube"
-		videoId     = "P3buv6P_u7c"
-		userId      = "UC_x5XG1OV2P6uZZ5FSM9Ttw"
-		video       *media.Video
-		mediaUser   *media.MediaUser
-		source      media.Source
-		err         error
-	)
-
-	if mediaSource == "youtube" {
-		ytService, err := yt.NewService(context.Background())
-		if err != nil {
-			panic(err)
-		}
-		ytServiceWrapper := youtube.NewYoutubeService(ytService)
-		source = youtube.NewSourceYoutube(ytServiceWrapper)
-	} else {
-		panic("not implemented")
-	}
-
-	video, err = source.GetVideo(videoId)
-	if err != nil {
-		panic(err)
-	}
-	println(video.Title)
-
-	mediaUser, err = source.GetMediaUser(userId)
-	if err != nil {
-		panic(err)
-	}
-	println(mediaUser.Title)
-}
-
-func runTwitch() {
-	var (
-		mediaSource = "twitch"
-		videoId     = "2031892840"
-		userId      = "fps_shaka"
-		video       *media.Video
-		mediaUser   *media.MediaUser
-		source      media.Source
-		err         error
-	)
-
-	if mediaSource == "twitch" {
-		ClientId := os.Getenv("TWITCH_CLIENT_ID")
-		ClientSecret := os.Getenv("TWITCH_TOKEN")
-		client, err := helix.NewClient(&helix.Options{
-			ClientID:        ClientId,
-			UserAccessToken: ClientSecret,
-		})
-		if err != nil {
-			fmt.Println(err)
-			panic(err)
-		}
-		twitchService := twitch.NewTwitchService(client)
-		source = twitch.NewTwitchSource(twitchService)
-	} else {
-		panic("not implemented")
-	}
-	video, err = source.GetVideo(videoId)
-	if err != nil {
-		panic(err)
-	}
-	println(video.Title)
-	mediaUser, err = source.GetMediaUser(userId)
-	if err != nil {
-		panic(err)
-	}
-	println(mediaUser.Title)
+type Data struct {
+	Source  string
+	VideoId string
+	UserId  string
 }
 
 func main() {
-	runYoutube()
-	runTwitch()
+	all := []Data{}
+
+	var (
+		user  *media.MediaUser
+		video *media.Video
+	)
+	data := Data{
+		Source:  "youtube",
+		VideoId: "P3buv6P_u7c",
+		UserId:  "UC_x5XG1OV2P6uZZ5FSM9Ttw",
+	}
+
+	all = append(all, data)
+
+	data = Data{
+		Source:  "twitch",
+		VideoId: "2031892840",
+		UserId:  "fps_shaka",
+	}
+
+	all = append(all, data)
+
+	for _, data := range all {
+		source, err := source.NewSource(data.Source)
+		if err != nil {
+			panic(err)
+		}
+		svc, err := media.NewMediaService(source)
+		if err != nil {
+			panic(err)
+		}
+		if data.VideoId != "" {
+			video, err = svc.GetVideo(data.VideoId)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("%+v\n", video)
+		}
+		if data.UserId != "" {
+			user, err = svc.GetMediaUser(data.UserId)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("%+v\n", user)
+		}
+	}
+
+	v, err := tubemeta.GetVideo("https://www.youtube.com/watch?v=hTVrE4BYkwA")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%+v\n", v)
 }

@@ -8,8 +8,6 @@ import (
 )
 
 func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
-	fmt.Println("GetMediaUser")
-	fmt.Printf("sy.yts %v\n", sy.yts)
 	q := sy.yts.ChannelsList([]string{"snippet"})
 
 	xs, err := q.Do(

@@ -3,9 +3,12 @@ module media-api-playground
 go 1.21.1
 
 require (
+	github.com/katelynn620/tubemeta v0.0.0
 	github.com/nicklaw5/helix/v2 v2.25.3
 	google.golang.org/api v0.156.0
 )
+
+replace github.com/katelynn620/tubemeta => ../tubemeta
 
 require (
 	cloud.google.com/go/compute v1.23.3 // indirect
