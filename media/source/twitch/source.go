@@ -14,6 +14,7 @@ const (
 type TwitchServiceInterface interface {
 	GetVideos(params *helix.VideosParams) (*helix.VideosResponse, error)
 	GetUsers(params *helix.UsersParams) (*helix.UsersResponse, error)
+	GetStreams(params *helix.StreamsParams) (*helix.StreamsResponse, error)
 }
 
 type TwitchService struct {
@@ -32,6 +33,10 @@ func (ts *TwitchService) GetVideos(params *helix.VideosParams) (*helix.VideosRes
 
 func (ts *TwitchService) GetUsers(params *helix.UsersParams) (*helix.UsersResponse, error) {
 	return ts.client.GetUsers(params)
+}
+
+func (ts *TwitchService) GetStreams(params *helix.StreamsParams) (*helix.StreamsResponse, error) {
+	return ts.client.GetStreams(params)
 }
 
 func NewTwitchService(client *helix.Client) *TwitchService {

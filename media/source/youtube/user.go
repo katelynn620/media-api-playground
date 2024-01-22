@@ -10,12 +10,13 @@ import (
 )
 
 func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
+	c, err := tubemeta.GetChannel(uid)
+	if err != nil {
+		return nil, err
+	}
+
 	// change uid if prefixed with @
 	if strings.HasPrefix(uid, "@") {
-		c, err := tubemeta.GetChannel(uid)
-		if err != nil {
-			return nil, err
-		}
 		uid = c.Id
 	}
 
@@ -40,5 +41,6 @@ func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
 		Avatar:      xs.Items[0].Snippet.Thumbnails.Default.Url,
 		URL:         fmt.Sprintf("https://www.youtube.com/channel/%s", xs.Items[0].Id),
 		Platform:    "youtube",
+		IsLive:      c.Live,
 	}, nil
 }

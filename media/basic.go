@@ -17,6 +17,7 @@ type MediaUser struct {
 	Avatar      string
 	URL         string
 	Platform    string
+	IsLive      bool
 }
 
 type Source interface {
