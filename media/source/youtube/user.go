@@ -3,11 +3,22 @@ package youtube
 import (
 	"fmt"
 	"media-api-playground/media"
+	"strings"
 
+	"github.com/katelynn620/tubemeta"
 	"google.golang.org/api/googleapi"
 )
 
 func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
+	// change uid if prefixed with @
+	if strings.HasPrefix(uid, "@") {
+		c, err := tubemeta.GetChannel(uid)
+		if err != nil {
+			return nil, err
+		}
+		uid = c.Id
+	}
+
 	q := sy.yts.ChannelsList([]string{"snippet"})
 
 	xs, err := q.Do(
