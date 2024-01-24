@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"media-api-playground/media"
-	"media-api-playground/media/source"
 
-	"github.com/katelynn620/tubemeta"
+	media "github.com/katelynn620/mediameta"
+	"github.com/katelynn620/mediameta/source"
 )
 
 type Data struct {
@@ -32,39 +31,32 @@ func main() {
 	data = Data{
 		Source:  "twitch",
 		VideoId: "2031892840",
-		UserId:  "fps_shaka",
+		UserId:  "never_loses",
 	}
 
 	all = append(all, data)
 
 	for _, data := range all {
-		source, err := source.NewSource(data.Source)
+		fmt.Printf("Source: %s\n", data.Source)
+		s, err := source.NewSource(data.Source)
 		if err != nil {
 			panic(err)
 		}
-		svc, err := media.NewMediaService(source)
-		if err != nil {
-			panic(err)
-		}
+
 		if data.VideoId != "" {
-			video, err = svc.GetVideo(data.VideoId)
+			video, err = s.GetVideo(data.VideoId)
 			if err != nil {
 				panic(err)
 			}
 			fmt.Printf("%+v\n", video)
 		}
 		if data.UserId != "" {
-			user, err = svc.GetMediaUser(data.UserId)
+			fmt.Printf("UserId: %s\n", data.UserId)
+			user, err = s.GetMediaUser(data.UserId)
 			if err != nil {
 				panic(err)
 			}
 			fmt.Printf("%+v\n", user)
 		}
 	}
-
-	v, err := tubemeta.GetVideo("https://www.youtube.com/watch?v=hTVrE4BYkwA")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", v)
 }

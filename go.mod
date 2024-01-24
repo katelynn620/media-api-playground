@@ -1,9 +1,9 @@
-module media-api-playground
+module github.com/katelynn620/mediameta
 
 go 1.21.1
 
 require (
-	github.com/katelynn620/tubemeta v0.0.0
+	github.com/katelynn620/tubemeta v0.0.4-0.20240124064344-7d14f4e796df
 	github.com/nicklaw5/helix/v2 v2.25.3
 	google.golang.org/api v0.156.0
 )

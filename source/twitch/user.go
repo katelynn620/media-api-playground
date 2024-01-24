@@ -1,7 +1,7 @@
 package twitch
 
 import (
-	"media-api-playground/media"
+	media "github.com/katelynn620/mediameta"
 
 	"github.com/nicklaw5/helix/v2"
 )

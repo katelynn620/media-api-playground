@@ -1,8 +1,9 @@
 package tubemeta
 
 import (
-	"media-api-playground/media"
 	"strings"
+
+	media "github.com/katelynn620/mediameta"
 
 	"github.com/katelynn620/tubemeta"
 )

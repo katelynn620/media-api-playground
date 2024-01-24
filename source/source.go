@@ -3,10 +3,13 @@ package source
 import (
 	"context"
 	"fmt"
-	"media-api-playground/media"
-	"media-api-playground/media/source/tubemeta"
-	"media-api-playground/media/source/twitch"
-	"media-api-playground/media/source/youtube"
+
+	media "github.com/katelynn620/mediameta"
+
+	"github.com/katelynn620/mediameta/source/tubemeta"
+	"github.com/katelynn620/mediameta/source/twitch"
+	"github.com/katelynn620/mediameta/source/youtube"
+
 	"os"
 
 	"github.com/nicklaw5/helix/v2"
@@ -24,7 +27,6 @@ func NewSource(mediaType string) (media.Source, error) {
 			UserAccessToken: ClientSecret,
 		})
 		if err != nil {
-			fmt.Println(err)
 			return nil, err
 		}
 		twitchService := twitch.NewTwitchService(client)
@@ -35,7 +37,6 @@ func NewSource(mediaType string) (media.Source, error) {
 		} else {
 			ytService, err := yt.NewService(context.Background())
 			if err != nil {
-				fmt.Println(err)
 				return nil, err
 			}
 			ytServiceWrapper := youtube.NewYoutubeService(ytService)

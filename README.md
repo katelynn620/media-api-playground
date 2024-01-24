@@ -1,1 +1,3 @@
-# Media API Playground
+# Metadata for Media Streaming Platform
+* Youtube
+* Twitch

@@ -2,7 +2,8 @@ package youtube
 
 import (
 	"fmt"
-	"media-api-playground/media"
+
+	media "github.com/katelynn620/mediameta"
 
 	"google.golang.org/api/googleapi"
 )
