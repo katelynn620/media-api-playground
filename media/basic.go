@@ -11,14 +11,16 @@ type Video struct {
 }
 
 type MediaUser struct {
-	Id          string
-	Name        string
-	Title       string
-	Description string
-	Avatar      string
-	URL         string
-	Platform    string
-	IsLive      bool
+	Id             string
+	Name           string
+	Title          string
+	Description    string
+	Avatar         string
+	URL            string
+	Platform       string
+	IsLive         bool
+	OngoingStreams []string
+	CurrentStream  string
 }
 
 type Source interface {

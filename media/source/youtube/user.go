@@ -109,7 +109,7 @@ func (sy *SourceYoutube) getVideoByChannelId(channelId string, eventType string)
 		googleapi.QueryParameter("type", "video"),
 		googleapi.QueryParameter("eventType", eventType),
 		// default maxResults is 5
-		// googleapi.QueryParameter("maxResults", "5"),
+		googleapi.QueryParameter("maxResults", "10"),
 	}
 
 	xs, err := q.Do(callOption...)
@@ -151,20 +151,39 @@ func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
 		}
 	}
 
+	currentStream := ""
 	liveVideo, err := sy.getVideoByChannelId(channel.Id.ChannelId, "live")
 	if err != nil {
 		return nil, err
 	}
+	if len(liveVideo) > 0 {
+		currentStream = liveVideo[0].Id.VideoId
+	}
+
+	ongoingStreamIds := []string{}
+	ongoingStreams, err := sy.getVideoByChannelId(channel.Id.ChannelId, "upcoming")
+	if err != nil {
+		return nil, err
+	}
+
+	for _, stream := range ongoingStreams {
+		if stream.Id.VideoId == currentStream {
+			continue
+		}
+		ongoingStreamIds = append(ongoingStreamIds, stream.Id.VideoId)
+	}
 
 	user = &media.MediaUser{
-		Id:          channel.Id.ChannelId,
-		Name:        channel.Snippet.CustomUrl,
-		Title:       channel.Snippet.Title,
-		Description: channel.Snippet.Description,
-		Avatar:      channel.Snippet.Thumbnails.Default.Url,
-		URL:         fmt.Sprintf("https://www.youtube.com/channel/%s", channel.Id.ChannelId),
-		Platform:    "youtube",
-		IsLive:      len(liveVideo) > 0,
+		Id:             channel.Id.ChannelId,
+		Name:           channel.Snippet.CustomUrl,
+		Title:          channel.Snippet.Title,
+		Description:    channel.Snippet.Description,
+		Avatar:         channel.Snippet.Thumbnails.Default.Url,
+		URL:            fmt.Sprintf("https://www.youtube.com/channel/%s", channel.Id.ChannelId),
+		Platform:       "youtube",
+		IsLive:         len(liveVideo) > 0,
+		OngoingStreams: ongoingStreamIds,
+		CurrentStream:  currentStream,
 	}
 
 	return user, nil

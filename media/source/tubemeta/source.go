@@ -46,15 +46,22 @@ func (ts *TubemetaService) GetChannel(channelId string) (*media.MediaUser, error
 	nameUrl := strings.Split(channel.CustomUrl, "/")
 	name := nameUrl[len(nameUrl)-1]
 
+	currentStream := ""
+	if channel.Live {
+		currentStream = channel.CurrentStreams[0]
+	}
+
 	return &media.MediaUser{
-		Id:          channel.Id,
-		Name:        name,
-		Title:       channel.Name,
-		Description: channel.Description,
-		Avatar:      channel.Avatar,
-		URL:         channel.Url,
-		Platform:    "youtube",
-		IsLive:      channel.Live,
+		Id:             channel.Id,
+		Name:           name,
+		Title:          channel.Name,
+		Description:    channel.Description,
+		Avatar:         channel.Avatar,
+		URL:            channel.Url,
+		Platform:       "youtube",
+		IsLive:         channel.Live,
+		OngoingStreams: channel.OngoingStreams,
+		CurrentStream:  currentStream,
 	}, nil
 }
 
