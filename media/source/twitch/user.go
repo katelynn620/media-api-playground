@@ -34,6 +34,7 @@ func (ts *TwitchSource) GetMediaUser(uid string) (*media.MediaUser, error) {
 
 	return &media.MediaUser{
 		Id:          userResp.Data.Users[0].ID,
+		Name:        userResp.Data.Users[0].Login,
 		Title:       userResp.Data.Users[0].DisplayName,
 		Description: userResp.Data.Users[0].Description,
 		Avatar:      userResp.Data.Users[0].ProfileImageURL,

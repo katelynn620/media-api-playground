@@ -12,6 +12,7 @@ type Video struct {
 
 type MediaUser struct {
 	Id          string
+	Name        string
 	Title       string
 	Description string
 	Avatar      string

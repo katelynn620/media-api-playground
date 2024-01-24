@@ -2,6 +2,7 @@ package tubemeta
 
 import (
 	"media-api-playground/media"
+	"strings"
 
 	"github.com/katelynn620/tubemeta"
 )
@@ -42,9 +43,12 @@ func (ts *TubemetaService) GetChannel(channelId string) (*media.MediaUser, error
 	if err != nil {
 		return nil, err
 	}
+	nameUrl := strings.Split(channel.CustomUrl, "/")
+	name := nameUrl[len(nameUrl)-1]
 
 	return &media.MediaUser{
 		Id:          channel.Id,
+		Name:        name,
 		Title:       channel.Name,
 		Description: channel.Description,
 		Avatar:      channel.Avatar,

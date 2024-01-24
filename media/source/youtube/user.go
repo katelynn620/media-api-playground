@@ -14,6 +14,7 @@ type channelResponse struct {
 	} `json:"id"`
 	Snippet struct {
 		Title       string `json:"title"`
+		CustomUrl   string `json:"customUrl"`
 		Description string `json:"description"`
 		Thumbnails  struct {
 			Default struct {
@@ -39,11 +40,11 @@ type videoResponse struct {
 	} `json:"snippet"`
 }
 
-func (sy *SourceYoutube) getChannelIdByName(name string) (*channelResponse, error) {
+func (sy *SourceYoutube) getChannelByName(name string) (*channelResponse, error) {
 	q := sy.yts.SearchList([]string{"snippet", "id"})
 
 	xs, err := q.Do(
-		googleapi.QueryParameter("q", name),
+		googleapi.QueryParameter("q", name[1:]),
 		googleapi.QueryParameter("type", "channel"),
 		googleapi.QueryParameter("maxResults", "1"),
 	)
@@ -57,6 +58,7 @@ func (sy *SourceYoutube) getChannelIdByName(name string) (*channelResponse, erro
 
 	channel := &channelResponse{}
 	channel.Id.ChannelId = xs.Items[0].Snippet.ChannelId
+	channel.Snippet.CustomUrl = name
 	channel.Snippet.Title = xs.Items[0].Snippet.Title
 	channel.Snippet.Description = xs.Items[0].Snippet.Description
 	channel.Snippet.Thumbnails.Default.Url = xs.Items[0].Snippet.Thumbnails.Default.Url
@@ -138,7 +140,7 @@ func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
 	)
 	// use search api if uid starts with @
 	if strings.HasPrefix(uid, "@") {
-		channel, err = sy.getChannelIdByName(uid[1:])
+		channel, err = sy.getChannelByName(uid)
 		if err != nil {
 			return nil, err
 		}
@@ -156,6 +158,7 @@ func (sy *SourceYoutube) GetMediaUser(uid string) (*media.MediaUser, error) {
 
 	user = &media.MediaUser{
 		Id:          channel.Id.ChannelId,
+		Name:        channel.Snippet.CustomUrl,
 		Title:       channel.Snippet.Title,
 		Description: channel.Snippet.Description,
 		Avatar:      channel.Snippet.Thumbnails.Default.Url,
