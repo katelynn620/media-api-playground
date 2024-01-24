@@ -9,6 +9,7 @@ import (
 type YoutubeServiceInterface interface {
 	ChannelsList(part []string) *yt.ChannelsListCall
 	VideosList(part []string) *yt.VideosListCall
+	SearchList(part []string) *yt.SearchListCall
 }
 
 type YoutubeService struct {
@@ -27,6 +28,10 @@ func (ys *YoutubeService) ChannelsList(part []string) *yt.ChannelsListCall {
 
 func (ys *YoutubeService) VideosList(part []string) *yt.VideosListCall {
 	return ys.service.Videos.List(part)
+}
+
+func (ys *YoutubeService) SearchList(part []string) *yt.SearchListCall {
+	return ys.service.Search.List(part)
 }
 
 func NewYoutubeService(service *yt.Service) *YoutubeService {
